@@ -34,6 +34,8 @@ import static org.springframework.util.StringUtils.commaDelimitedListToStringArr
 import static org.springframework.util.StringUtils.trimArrayElements;
 
 /**
+ *
+ * 扫描指定package下面的
  * {@link AnnotationBean} {@link BeanDefinitionParser}
  *
  * @see ServiceAnnotationBeanPostProcessor

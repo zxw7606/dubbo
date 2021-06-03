@@ -122,7 +122,7 @@ public abstract class AnnotationInjectedBeanPostProcessor<A extends Annotation> 
     @Override
     public PropertyValues postProcessPropertyValues(
             PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName) throws BeanCreationException {
-
+        // 把每个bean对象中的包含 @Reference的注解或者方法注入进入
         InjectionMetadata metadata = findInjectionMetadata(beanName, bean.getClass(), pvs);
         try {
             metadata.inject(bean, beanName, pvs);
@@ -463,6 +463,7 @@ public abstract class AnnotationInjectedBeanPostProcessor<A extends Annotation> 
     }
 
     /**
+     * 方法的注入
      * {@link A} {@link Method} {@link InjectionMetadata.InjectedElement}
      */
     public class AnnotatedMethodElement extends InjectionMetadata.InjectedElement {
@@ -479,6 +480,13 @@ public abstract class AnnotationInjectedBeanPostProcessor<A extends Annotation> 
             this.annotation = annotation;
         }
 
+        /**
+         * 获取属性的类型。 然后动态的注入 ？ @Reference
+         * @param bean
+         * @param beanName
+         * @param pvs
+         * @throws Throwable
+         */
         @Override
         protected void inject(Object bean, String beanName, PropertyValues pvs) throws Throwable {
 
@@ -512,6 +520,9 @@ public abstract class AnnotationInjectedBeanPostProcessor<A extends Annotation> 
     /**
      * {@link A} {@link Field} {@link InjectionMetadata.InjectedElement}
      */
+    /**
+     * 注解属性的注入
+     */
     public class AnnotatedFieldElement extends InjectionMetadata.InjectedElement {
 
         private final Field field;
@@ -531,6 +542,7 @@ public abstract class AnnotationInjectedBeanPostProcessor<A extends Annotation> 
 
             Class<?> injectedType = field.getType();
 
+            // 可以看出 dubbo 的 reference 都是由自己管理的。。。。？
             injectedBean = getInjectedObject(annotation, bean, beanName, injectedType, this);
 
             ReflectionUtils.makeAccessible(field);

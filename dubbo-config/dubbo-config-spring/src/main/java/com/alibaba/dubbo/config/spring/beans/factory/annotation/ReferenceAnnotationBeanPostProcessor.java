@@ -120,6 +120,7 @@ public class ReferenceAnnotationBeanPostProcessor extends AnnotationInjectedBean
 
     private Object buildProxy(String referencedBeanName, ReferenceBean referenceBean, Class<?> injectedType) {
         InvocationHandler handler = buildInvocationHandler(referencedBeanName, referenceBean);
+        // 直接调用初始化
         Object proxy = Proxy.newProxyInstance(getClassLoader(), new Class[]{injectedType}, handler);
         return proxy;
     }
