@@ -76,6 +76,7 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         RootBeanDefinition beanDefinition = new RootBeanDefinition();
         beanDefinition.setBeanClass(beanClass);
         beanDefinition.setLazyInit(false);
+        // ID 的名字处理, 就是把 id 搞得和 interface 明一样
         String id = element.getAttribute("id");
         if ((id == null || id.length() == 0) && required) {
             String generatedBeanName = element.getAttribute("name");
@@ -102,6 +103,8 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
             parserContext.getRegistry().registerBeanDefinition(id, beanDefinition);
             beanDefinition.getPropertyValues().addPropertyValue("id", id);
         }
+
+        // 针对 ProtocolConfig <protocol>标签的 的 处理
         if (ProtocolConfig.class.equals(beanClass)) {
             for (String name : parserContext.getRegistry().getBeanDefinitionNames()) {
                 BeanDefinition definition = parserContext.getRegistry().getBeanDefinition(name);
@@ -109,11 +112,20 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
                 if (property != null) {
                     Object value = property.getValue();
                     if (value instanceof ProtocolConfig && id.equals(((ProtocolConfig) value).getName())) {
+                        // 当我们需要动态注入Bean，并给该Bean的属性注入其他Bean时，
+                        // 比如在Mybatis和Spring的整合中，我们需要动态注入Mapper到spring容器中，
+                        // 而该Mapper如果需要执行SQL语句，还需要持有SqlSessionFactory的引用。
+                        // 但是我们注入时，可能对应的Bean还没有准备好，
+                        // 这时，我们就可以使用RuntimeBeanReference，以保持对实际Bean的引用。
+                        // 在Spring处理依赖关系时，最终会将该引用替换成实际生成的Bean对象。例如：
+                        // definition.getPropertyValues().add("sqlSessionFactory", new RuntimeBeanReference(this.sqlSessionFactoryBeanName));
                         definition.getPropertyValues().addPropertyValue("protocol", new RuntimeBeanReference(id));
                     }
                 }
             }
-        } else if (ServiceBean.class.equals(beanClass)) {
+        }
+        // 针对service注解
+        else if (ServiceBean.class.equals(beanClass)) {
             String className = element.getAttribute("class");
             if (className != null && className.length() > 0) {
                 RootBeanDefinition classDefinition = new RootBeanDefinition();
@@ -129,6 +141,8 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         }
         Set<String> props = new HashSet<String>();
         ManagedMap parameters = null;
+        // 参数的设置 props
+        // 除了 provider consumer protocol
         for (Method setter : beanClass.getMethods()) {
             String name = setter.getName();
             if (name.length() > 3 && name.startsWith("set")
@@ -273,8 +287,10 @@ public class DubboBeanDefinitionParser implements BeanDefinitionParser {
         }
         beanDefinition.getPropertyValues().addPropertyValue(property, list);
     }
-
-    private static void parseNested(Element element, ParserContext parserContext, Class<?> beanClass, boolean required, String tag, String property, String ref, BeanDefinition beanDefinition) {
+//    parseNested(element, parserContext, ServiceBean.class, true,
+//    "service", "provider", id, beanDefinition);
+    private static void parseNested(Element element, ParserContext parserContext, Class<?> beanClass, boolean required,
+                                    String tag, String property, String ref, BeanDefinition beanDefinition) {
         NodeList nodeList = element.getChildNodes();
         if (nodeList != null && nodeList.getLength() > 0) {
             boolean first = true;
