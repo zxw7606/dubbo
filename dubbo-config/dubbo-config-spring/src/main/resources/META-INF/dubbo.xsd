@@ -108,7 +108,7 @@
                 </xsd:attribute>
                 <xsd:attribute name="filter" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The filter. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The filter. 可以加一点过滤器，可能链路追踪就是这个原理 ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="listener" type="xsd:string" use="optional">
@@ -128,32 +128,35 @@
                 </xsd:attribute>
                 <xsd:attribute name="application" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The service application. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The service application.(应用名称) ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="module" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The service module. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The service module.( 模块配置，用于配置当前模块信息，可选。
+                        TODO 这里什么是模块信息
+                        )]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="registry" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The service registry. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The service registry.(注册中心) ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="monitor" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The service monitor. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The service monitor.(监控中心) ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="callbacks" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The callback instance limit peer connection.]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The callback instance limit peer connection.
+TODO 回调？ ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="onconnect" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The service client connected. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The service client connected. 连接成功的回调？ ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="ondisconnect" type="xsd:string" use="optional">
@@ -164,13 +167,16 @@
                 <xsd:attribute name="scope" type="xsd:string" use="optional">
                     <xsd:annotation>
                         <xsd:documentation>
-                            <![CDATA[ Defines the service visibility, choise:[local remote]. default is remote, which can be invoked by network。  ]]></xsd:documentation>
+                            <![CDATA[ Defines the service visibility, choise:[local remote]. default is remote, which can be invoked by network。
+                    本地会调用 本机IP？
+]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
 
+<!--    这里可以说是 @Reference 的依赖检查把 -->
     <xsd:complexType name="abstractReferenceType">
         <xsd:complexContent>
             <xsd:extension base="abstractInterfaceType">
@@ -196,7 +202,7 @@
                 </xsd:attribute>
                 <xsd:attribute name="generic" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ Generic service. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ Generic service. 是否泛型]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="injvm" type="xsd:string" use="optional">
@@ -225,6 +231,7 @@
         </xsd:complexContent>
     </xsd:complexType>
 
+<!--  @Service  -->
     <xsd:complexType name="abstractServiceType">
         <xsd:complexContent>
             <xsd:extension base="abstractInterfaceType">
@@ -309,7 +316,7 @@
                 </xsd:attribute>
                 <xsd:attribute name="serialization" type="xsd:string" use="optional">
                     <xsd:annotation>
-                        <xsd:documentation><![CDATA[ The serialization protocol of service. ]]></xsd:documentation>
+                        <xsd:documentation><![CDATA[ The serialization protocol of service. 定义序列化协议 ]]></xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
                 <xsd:attribute name="tag" type="xsd:string" use="optional">
