@@ -132,6 +132,7 @@ public class ServiceAnnotationBeanPostProcessor implements BeanDefinitionRegistr
         for (String packageToScan : packagesToScan) {
 
             // Registers @Service Bean first
+            // 可以看出 @Service 包含 Spring 注入的功能
             scanner.scan(packageToScan);
 
             // Finds all BeanDefinitionHolders of @Service whether @ComponentScan scans or not.
@@ -224,6 +225,7 @@ public class ServiceAnnotationBeanPostProcessor implements BeanDefinitionRegistr
         for (BeanDefinition beanDefinition : beanDefinitions) {
 
             String beanName = beanNameGenerator.generateBeanName(beanDefinition, registry);
+            // 为什么要重命名一下？
             BeanDefinitionHolder beanDefinitionHolder = new BeanDefinitionHolder(beanDefinition, beanName);
             beanDefinitionHolders.add(beanDefinitionHolder);
 
@@ -253,12 +255,15 @@ public class ServiceAnnotationBeanPostProcessor implements BeanDefinitionRegistr
 
         String annotatedServiceBeanName = beanDefinitionHolder.getBeanName();
 
+        // 这里是要变代理了吗？
         AbstractBeanDefinition serviceBeanDefinition =
                 buildServiceBeanDefinition(service, interfaceClass, annotatedServiceBeanName);
 
         // ServiceBean Bean name
         String beanName = generateServiceBeanName(service, interfaceClass, annotatedServiceBeanName);
 
+        // 同时注册自己定义的BD
+        // 检查重复的或者类型 是否一致
         if (scanner.checkCandidate(beanName, serviceBeanDefinition)) { // check duplicated candidate bean
             registry.registerBeanDefinition(beanName, serviceBeanDefinition);
 
@@ -363,6 +368,8 @@ public class ServiceAnnotationBeanPostProcessor implements BeanDefinitionRegistr
     private AbstractBeanDefinition buildServiceBeanDefinition(Service service, Class<?> interfaceClass,
                                                               String annotatedServiceBeanName) {
 
+
+        // 可以看出 ServiceBean 就是 最终生成的对象
         BeanDefinitionBuilder builder = rootBeanDefinition(ServiceBean.class);
 
         AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
